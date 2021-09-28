@@ -1,5 +1,6 @@
 # #!venv/bin/python
 import logging
+import os
 
 from aiogram import Bot, Dispatcher, executor, types
 from aiogram.dispatcher import FSMContext
@@ -46,4 +47,9 @@ register_profile_handlers(dp)
 #     """Ответ на любое неожидаемое сообщение"""
 
 if __name__ == '__main__':
+    if not os.path.exists(DB_NAME):
+        db.create()
+
     executor.start_polling(dp, skip_updates=True)
+
+
