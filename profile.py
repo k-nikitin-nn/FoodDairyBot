@@ -58,6 +58,6 @@ def register_profile_handlers(dp):
         await state.update_data(email=message.text)
 
         data = await state.get_data()
-        db.insert_db(data)
+        db.create_user(data)
 
         await message.answer("Спасибо.")
