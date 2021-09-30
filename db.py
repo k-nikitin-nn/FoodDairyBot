@@ -35,4 +35,4 @@ def create_user(data: dict):
 
 
 def get_user(telegram_id: int):
-    return session.query(User).filter(User.id == telegram_id).all()
+    return session.query(User).filter(User.telegram_id == telegram_id).all()
