@@ -22,7 +22,7 @@ class Entry(Base):
     mealtime = Column(Enum(MealTime))
     text = Column(String)
     day_id = Column(String, ForeignKey("days.id"))
-    day = relationship("Day")
+    day = relationship("Day", back_populates="entries")
 
     def __init__(self, time: _time, mealtime: str, text: str):
         self.id = str(uuid.uuid4())

@@ -2,9 +2,9 @@ from sqlalchemy import create_engine
 from sqlalchemy.ext.declarative import declarative_base
 from sqlalchemy.orm import sessionmaker
 
-DB_NAME = 'fooddairy.db'
+DB_NAME = 'fooddairy.sqlite'
 
-engine = create_engine(f'sqlite:///{DB_NAME}]')
+engine = create_engine(f'sqlite:///{DB_NAME}')
 Session = sessionmaker(bind=engine)
 
 Base = declarative_base()

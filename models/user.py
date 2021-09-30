@@ -15,8 +15,8 @@ class User(Base):
     email = Column(String)
     created_on = Column(DateTime)
     birthday = Column(Date)
-    days = relationship("Day")
-    measurements = relationship("Measurement")
+    days = relationship("Day", back_populates="user")
+    measurements = relationship("Measurement", back_populates="user")
 
     def __init__(self, name: str, last_name: str, email: str, birthday: date, telegram_id: int):
         self.id = str(uuid.uuid4())

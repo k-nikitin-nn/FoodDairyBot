@@ -11,8 +11,8 @@ class Day(Base):
     id = Column(String, primary_key=True)
     date = Column(Date)
     user_id = Column(String, ForeignKey("users.id"))
-    user = relationship("User")
-    entries = relationship("Entry")
+    user = relationship("User", back_populates="days")
+    entries = relationship("Entry", back_populates="day")
 
     def __init__(self, date: _date):
         self.id = str(uuid.uuid4())

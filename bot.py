@@ -6,9 +6,10 @@ from aiogram import Bot, Dispatcher, executor, types
 from aiogram.dispatcher import FSMContext
 from aiogram.contrib.fsm_storage.memory import MemoryStorage
 
-from config import DB_NAME, TOKEN
+from config import TOKEN
 from profile import profile_start, register_profile_handlers
 
+from models.database import DB_NAME
 import db
 
 logging.basicConfig(level=logging.INFO)

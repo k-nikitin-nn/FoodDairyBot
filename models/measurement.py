@@ -21,7 +21,7 @@ class Measurement(Base):
     height = Column(Integer)
     weight = Column(Integer)
     user_id = Column(String, ForeignKey("users.id"))
-    user = relationship("User")
+    user = relationship("User", back_populates="measurements")
 
     def __init__(self, neck_size: int, breast_size: int, back_size: int, stomach_size: int, thigh_size: int,
                  leg_size: int, hand_size: int, waist_size: int, height: int, weight: int):
