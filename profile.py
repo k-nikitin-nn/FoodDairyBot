@@ -1,4 +1,3 @@
-import re
 from datetime import datetime
 
 from aiogram import types
@@ -6,6 +5,7 @@ from aiogram.dispatcher import FSMContext
 from aiogram.dispatcher.filters.state import State, StatesGroup
 
 import db
+import general
 
 
 class ProfileUser(StatesGroup):
@@ -21,13 +21,20 @@ async def profile_start(message: types.Message):
     await ProfileUser.wait_username.set()
 
 
+profile_config = {
+    "wait_username": {
+        "state": ProfileUser.wait_username
+    },
+    "wait_lastname": {"state": ProfileUser.wait_lastname},
+    "wait_birthday": {"state": ProfileUser.wait_birthday},
+    "wait_email": {"state": ProfileUser.wait_email}
+}
+
+
 def register_profile_handlers(dp):
     @dp.message_handler(state=ProfileUser.wait_username)
     async def profile_username_filled(message: types.Message, state: FSMContext):
-        await state.update_data(name=message.text)
-        await ProfileUser.next()
-
-        await message.answer("Введи свою фамилию.")
+        await update_data(message, state, ProfileUser, {"name": message.text})
 
     @dp.message_handler(state=ProfileUser.wait_lastname)
     async def profile_lastname_filled(message: types.Message, state: FSMContext):
@@ -38,21 +45,19 @@ def register_profile_handlers(dp):
 
     @dp.message_handler(state=ProfileUser.wait_birthday)
     async def profile_birthday_filled(message: types.Message, state: FSMContext):
-        pattern = r"(?:0[1-9]|[12]\d|3[01])([.])(?:0[1-9]|1[012])\1(?:19|20)\d\d$"
-        if re.match(pattern, message.text.strip()) is None:
-            await message.answer("""Дата рождения введена не корректно. Пожалуйста, введи дату рождения ещё раз.""")
+        if general.is_email_incorrect(message.text):
+            await message.answer("Дата рождения введена не корректно.")
             return
 
-        await state.update_data(birthday=datetime.strptime(message.text.strip(), "%d.%m.%Y"))
+        await state.update_data(birthday=datetime.strptime(message.text, "%d.%m.%Y"))
         await ProfileUser.next()
 
         await message.answer("Введи email.")
 
     @dp.message_handler(state=ProfileUser.wait_email)
     async def profile_email_filled(message: types.Message, state: FSMContext):
-        pattern = r"^[-\w.]+@([A-z0-9][-A-z0-9]+\.)+[A-z]{2,4}$"
-        if re.match(pattern, message.text) is None:
-            await message.answer("Email введен не корректно. Пожалуйста, введи email ещё раз.")
+        if general.is_date_incorrect(message.text):
+            await message.answer("Email введен не корректно.")
             return
 
         await state.update_data(email=message.text)
@@ -61,3 +66,17 @@ def register_profile_handlers(dp):
         db.create_user(data)
 
         await message.answer("Спасибо.")
+
+
+def check_f(fn):
+    async def wrapped(message, state, description_states, data):
+        await fn(message, state, description_states, data)
+        await message.answer("Введи свою фамилию.")
+
+    return wrapped
+
+
+@check_f
+async def update_data(message, state, description_states, data):
+    await state.update_data(data)
+    await description_states.next()

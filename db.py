@@ -1,7 +1,7 @@
 from models.database import create_db, Session
 from models.day import Day
 from models.user import User
-from models.measurement import Measurement
+from models.girth import Girth
 from models.entry import Entry
 
 session = Session()

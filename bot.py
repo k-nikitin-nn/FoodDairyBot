@@ -34,9 +34,9 @@ async def start_handler(message: types.Message, state: FSMContext):
     else:
         await message.answer(
             "Бот помогает \n\n"
-            "Добавить замеры тела: /add_measurement \n"
+            "Добавить замеры тела: /add_girths \n"
             "Добавить запись дневника: /add_entries \n"
-            "Динамика замеров тела: /get_entries \n"
+            "Динамика замеров тела: /get_girths \n"
             "Список записей дневника: /get_entries \n")
 
 register_profile_handlers(dp)
