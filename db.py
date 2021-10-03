@@ -36,3 +36,21 @@ def create_user(data: dict):
 
 def get_user(telegram_id: int):
     return session.query(User).filter(User.telegram_id == telegram_id).all()
+
+
+def create_girth(data: dict):
+    date = data.get("date")
+    neck = data.get("neck")
+    breast = data.get("breast")
+    back = data.get("back")
+    belly = data.get("belly")
+    thigh = data.get("thigh")
+    leg = data.get("leg")
+    hand = data.get("hand")
+    waist = data.get("waist")
+    height = data.get("height")
+    weight = data.get("weight")
+    user_id = data.get("user_id")
+
+    girth = Girth(date, neck, breast, back, belly, thigh, leg, hand, waist, height, weight, user_id)
+    session_commit(girth)

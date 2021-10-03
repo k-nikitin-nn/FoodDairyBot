@@ -9,6 +9,7 @@ from aiogram.dispatcher.filters import Text
 
 from config import TOKEN
 from profile import profile_start, register_profile_handlers
+from girths import girth_start, register_girth_handlers
 
 from models.database import DB_NAME
 import db
@@ -39,7 +40,21 @@ async def start_handler(message: types.Message, state: FSMContext):
             "Динамика замеров тела: /get_girths \n"
             "Список записей дневника: /get_entries \n")
 
+
+@dp.message_handler(commands=['add_girths'], state="*")
+async def start_girths(message: types.Message, state: FSMContext):
+    await state.finish()
+
+    result = db.get_user(message.from_user.id)
+    if bool(result):
+        await state.update_data(user_id=result.id)
+        await girth_start(message)
+    else:
+        await message.answer("Что-то пошло не так.")
+
+
 register_profile_handlers(dp)
+register_girth_handlers(dp)
 
 # @dp.message_handler(commands=['help'])
 # async def help_handler(message: types.Message):

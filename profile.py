@@ -34,49 +34,45 @@ profile_config = {
 def register_profile_handlers(dp):
     @dp.message_handler(state=ProfileUser.wait_username)
     async def profile_username_filled(message: types.Message, state: FSMContext):
-        await update_data(message, state, ProfileUser, {"name": message.text})
+        await general.update_data(
+            message=message,
+            state=state,
+            states=ProfileUser,
+            data="name",
+            next_message="Введи свою фамилию:")
 
     @dp.message_handler(state=ProfileUser.wait_lastname)
     async def profile_lastname_filled(message: types.Message, state: FSMContext):
-        await state.update_data(last_name=message.text)
-        await ProfileUser.next()
-
-        await message.answer("Введи дату рождения в формате '01.01.0001'")
+        await general.update_data(
+            message=message,
+            state=state,
+            states=ProfileUser,
+            data="last_name",
+            next_message="Введи дату рождения в формате '01.01.0001'")
 
     @dp.message_handler(state=ProfileUser.wait_birthday)
     async def profile_birthday_filled(message: types.Message, state: FSMContext):
-        if general.is_email_incorrect(message.text):
-            await message.answer("Дата рождения введена не корректно.")
-            return
-
-        await state.update_data(birthday=datetime.strptime(message.text, "%d.%m.%Y"))
-        await ProfileUser.next()
-
-        await message.answer("Введи email.")
+        await general.update_data(
+            message=message,
+            state=state,
+            states=ProfileUser,
+            data="birthday",
+            extra=general.string_to_date,
+            next_message="Введи email:",
+            error="Дата рождения введена не корректно.",
+            check=general.is_date_incorrect
+        )
 
     @dp.message_handler(state=ProfileUser.wait_email)
     async def profile_email_filled(message: types.Message, state: FSMContext):
-        if general.is_date_incorrect(message.text):
-            await message.answer("Email введен не корректно.")
-            return
-
-        await state.update_data(email=message.text)
+        await general.update_data(
+            message=message,
+            state=state,
+            data="email",
+            next_message="Спасибо",
+            error="Email введен не корректно.",
+            check=general.is_email_incorrect
+        )
 
         data = await state.get_data()
         db.create_user(data)
-
-        await message.answer("Спасибо.")
-
-
-def check_f(fn):
-    async def wrapped(message, state, description_states, data):
-        await fn(message, state, description_states, data)
-        await message.answer("Введи свою фамилию.")
-
-    return wrapped
-
-
-@check_f
-async def update_data(message, state, description_states, data):
-    await state.update_data(data)
-    await description_states.next()
