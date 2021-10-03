@@ -47,7 +47,7 @@ async def start_girths(message: types.Message, state: FSMContext):
 
     result = db.get_user(message.from_user.id)
     if bool(result):
-        await state.update_data(user_id=result.id)
+        await state.update_data(user_id=result[0].id)
         await girth_start(message)
     else:
         await message.answer("Что-то пошло не так.")
