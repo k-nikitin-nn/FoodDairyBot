@@ -14,12 +14,11 @@ class Girth(StatesGroup):
     wait_neck = State()
     wait_breast = State()
     wait_back = State()
+    wait_waist = State()
     wait_belly = State()
     wait_thigh = State()
-    wait_leg = State()
     wait_hand = State()
-    wait_waist = State()
-    wait_height = State()
+    wait_foot = State()
     wait_weight = State()
 
 
@@ -32,7 +31,7 @@ def girths_structure():
         "belly": {"name_ru": "Живот", "unit": "см", "dates": {}},
         "thigh": {"name_ru": "Бедра", "unit": "см", "dates": {}},
         "hand": {"name_ru": "Правая рука", "unit": "см", "dates": {}},
-        "leg": {"name_ru": "Правая нога", "unit": "см", "dates": {}},
+        "foot": {"name_ru": "Правая нога", "unit": "см", "dates": {}},
         "weight": {"name_ru": "Вес", "unit": "кг", "dates": {}}
     }
 
@@ -113,47 +112,47 @@ def register_girth_handlers(dp):
             states=Girth,
             data="back",
             extra=general.string_to_int,
-            next_message="Обхват живота (см.):",
+            next_message="Обхват талии (см.):",
             error="Обхват спины введен не корректно.",
             check=general.is_not_number
         )
 
-    @dp.message_handler(state=Girth.wait_belly)
+    @dp.message_handler(state=Girth.wait_waist)
     async def girth_belly_filled(message: types.Message, state: FSMContext):
+        await general.update_data(
+            message=message,
+            state=state,
+            states=Girth,
+            data="waist",
+            extra=general.string_to_int,
+            next_message="Обхват живота (см.):",
+            error="Обхват талии введен не корректно.",
+            check=general.is_not_number
+        )
+
+    @dp.message_handler(state=Girth.wait_belly)
+    async def girth_thigh_filled(message: types.Message, state: FSMContext):
         await general.update_data(
             message=message,
             state=state,
             states=Girth,
             data="belly",
             extra=general.string_to_int,
-            next_message="Обхват бедра (см.):",
+            next_message="Обхват бедер (см.):",
             error="Обхват живота введен не корректно.",
             check=general.is_not_number
         )
 
     @dp.message_handler(state=Girth.wait_thigh)
-    async def girth_thigh_filled(message: types.Message, state: FSMContext):
+    async def girth_foot_filled(message: types.Message, state: FSMContext):
         await general.update_data(
             message=message,
             state=state,
             states=Girth,
             data="thigh",
             extra=general.string_to_int,
-            next_message="Обхват голени (см.):",
-            error="Обхват бедра введен не корректно.",
-            check=general.is_not_number
-        )
-
-    @dp.message_handler(state=Girth.wait_leg)
-    async def girth_leg_filled(message: types.Message, state: FSMContext):
-        await general.update_data(
-            message=message,
-            state=state,
-            states=Girth,
-            data="leg",
-            extra=general.string_to_int,
-            next_message="Обхват руки (см.):",
-            error="Обхват голени введен не корректно.",
+            next_message="Обхват правой руки (см.):",
+            error="Обхват бедер введен не корректно.",
             check=general.is_not_number
         )
 
@@ -165,34 +164,21 @@ def register_girth_handlers(dp):
             states=Girth,
             data="hand",
             extra=general.string_to_int,
-            next_message="Обхват талии (см.):",
-            error="Обхват руки введен не корректно.",
+            next_message="Обхват правой ноги (см.):",
+            error="Обхват правой руки введен не корректно.",
             check=general.is_not_number
         )
 
-    @dp.message_handler(state=Girth.wait_waist)
+    @dp.message_handler(state=Girth.wait_foot)
     async def girth_waist_filled(message: types.Message, state: FSMContext):
         await general.update_data(
             message=message,
             state=state,
             states=Girth,
-            data="waist",
-            extra=general.string_to_int,
-            next_message="Рост (см.):",
-            error="Обхват талии введен не корректно.",
-            check=general.is_not_number
-        )
-
-    @dp.message_handler(state=Girth.wait_height)
-    async def girth_height_filled(message: types.Message, state: FSMContext):
-        await general.update_data(
-            message=message,
-            state=state,
-            states=Girth,
-            data="height",
+            data="foot",
             extra=general.string_to_int,
             next_message="Вес (кг.):",
-            error="Рост введен не корректно.",
+            error="Обхват правой ноги введен не корректно.",
             check=general.is_not_number
         )
 

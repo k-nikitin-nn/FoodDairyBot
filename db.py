@@ -47,14 +47,14 @@ def create_girth(data: dict):
     back = data.get("back")
     belly = data.get("belly")
     thigh = data.get("thigh")
-    leg = data.get("leg")
+    foot = data.get("foot")
     hand = data.get("hand")
     waist = data.get("waist")
     height = data.get("height")
     weight = data.get("weight")
     user_id = data.get("user_id")
 
-    girth = Girth(date, neck, breast, back, belly, thigh, leg, hand, waist, height, weight, user_id)
+    girth = Girth(date, neck, breast, back, belly, thigh, foot, hand, waist, height, weight, user_id)
     session_commit(girth)
 
 
