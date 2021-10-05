@@ -1,3 +1,5 @@
+from sqlalchemy import desc
+
 from models.database import create_db, Session
 from models.day import Day
 from models.user import User
@@ -54,3 +56,11 @@ def create_girth(data: dict):
 
     girth = Girth(date, neck, breast, back, belly, thigh, leg, hand, waist, height, weight, user_id)
     session_commit(girth)
+
+
+def get_girths(telegram_id: int):
+    return session.query(Girth) \
+        .order_by(Girth.date) \
+        .join(User) \
+        .filter(User.telegram_id == telegram_id) \
+        .all()

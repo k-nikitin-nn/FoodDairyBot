@@ -23,6 +23,27 @@ class Girth(StatesGroup):
     wait_weight = State()
 
 
+async def show_girths(message: types.Message):
+    result = db.get_girths(message.from_user.id)
+
+    if len(result) > 3:
+        del result[1:len(result) - 2]
+
+    for elem in result:
+        await message.answer(
+            f"Дата замера - {datetime.strftime(elem.date, '%d.%m.%Y')} \n\n"
+            f"Обхват шеи: {elem.neck} см. \n"
+            f"Обхват груди: {elem.breast}  см. \n"
+            f"Обхват спины: {elem.back}  см. \n"
+            f"Обхват живота: {elem.belly}  см. \n"
+            f"Обхват бедра: {elem.thigh}  см. \n"
+            f"Обхват голени: {elem.leg}  см. \n"
+            f"Обхват руки: {elem.hand}  см. \n"
+            f"Обхват талии: \t{elem.waist}  см. \n"
+            f"Вес: {elem.weight}  кг.\n"
+        )
+
+
 async def girth_start(message: types.Message):
     await message.answer("Укажите дату замеров в формате '01.01.0001':")
     await Girth.wait_date.set()
