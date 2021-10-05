@@ -23,25 +23,41 @@ class Girth(StatesGroup):
     wait_weight = State()
 
 
+def girths_structure():
+    return {
+        "neck": {"name_ru": "Шея", "unit": "см", "dates": {}},
+        "breast": {"name_ru": "Грудь", "unit": "см", "dates": {}},
+        "back": {"name_ru": "Спина", "unit": "см", "dates": {}},
+        "waist": {"name_ru": "Талия", "unit": "см", "dates": {}},
+        "belly": {"name_ru": "Живот", "unit": "см", "dates": {}},
+        "thigh": {"name_ru": "Бедра", "unit": "см", "dates": {}},
+        "hand": {"name_ru": "Правая рука", "unit": "см", "dates": {}},
+        "leg": {"name_ru": "Правая нога", "unit": "см", "dates": {}},
+        "weight": {"name_ru": "Вес", "unit": "кг", "dates": {}}
+    }
+
+
 async def show_girths(message: types.Message):
     result = db.get_girths(message.from_user.id)
+    if not result:
+        await message.answer("Измерения еще не введены.")
 
-    if len(result) > 3:
-        del result[1:len(result) - 2]
+    await message.answer("Динамика измерений \n\n")
+
+    girths = girths_structure()
 
     for elem in result:
-        await message.answer(
-            f"Дата замера - {datetime.strftime(elem.date, '%d.%m.%Y')} \n\n"
-            f"Обхват шеи: {elem.neck} см. \n"
-            f"Обхват груди: {elem.breast}  см. \n"
-            f"Обхват спины: {elem.back}  см. \n"
-            f"Обхват живота: {elem.belly}  см. \n"
-            f"Обхват бедра: {elem.thigh}  см. \n"
-            f"Обхват голени: {elem.leg}  см. \n"
-            f"Обхват руки: {elem.hand}  см. \n"
-            f"Обхват талии: \t{elem.waist}  см. \n"
-            f"Вес: {elem.weight}  кг.\n"
-        )
+        for key, value in girths.items():
+            value.get("dates")[datetime.strftime(elem.date, '%d.%m.%Y')] = vars(elem)[key]
+
+    for key, value in girths.items():
+        mes = value.get("name_ru") + "\n\n"
+        unit = value.get("unit")
+
+        for date, girth in value.get("dates").items():
+            mes = mes + f"{date} - {girth} {unit}. \n"
+
+        await message.answer(mes)
 
 
 async def girth_start(message: types.Message):
@@ -195,7 +211,3 @@ def register_girth_handlers(dp):
 
         data = await state.get_data()
         db.create_girth(data)
-
-
-
-
