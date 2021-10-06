@@ -1,4 +1,3 @@
-import re
 from datetime import datetime
 
 from aiogram import types
@@ -7,6 +6,7 @@ from aiogram.dispatcher.filters.state import State, StatesGroup
 
 import db
 import general
+from config import menu
 
 
 class Girth(StatesGroup):
@@ -40,6 +40,8 @@ async def show_girths(message: types.Message):
     result = db.get_girths(message.from_user.id)
     if not result:
         await message.answer("Измерения еще не введены.")
+        await message.answer(menu)
+        return
 
     await message.answer("Динамика измерений \n\n")
 
@@ -190,10 +192,12 @@ def register_girth_handlers(dp):
             states=Girth,
             data="weight",
             extra=general.string_to_int,
-            next_message="Замеры тела сохранены.",
+            next_message="Спасибо. Замеры тела сохранены.",
             error="Вес введен не корректно.",
             check=general.is_not_number
         )
+
+        await message.answer(menu)
 
         data = await state.get_data()
         db.create_girth(data)

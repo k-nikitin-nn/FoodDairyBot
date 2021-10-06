@@ -10,9 +10,11 @@ from aiogram.dispatcher.filters import Text
 from config import TOKEN
 from profile import profile_start, register_profile_handlers
 from girths import girth_start, register_girth_handlers, show_girths
+from entries import entries_start, register_entries_handlers
 
 from models.database import DB_NAME
 import db
+from config import menu
 
 logging.basicConfig(level=logging.INFO)
 
@@ -33,12 +35,7 @@ async def start_handler(message: types.Message, state: FSMContext):
         await state.update_data(telegram_id=message.from_user.id)
         await profile_start(message)
     else:
-        await message.answer(
-            "Бот помогает \n\n"
-            "Добавить замеры тела: /add_girths \n"
-            "Добавить запись дневника: /add_entries \n"
-            "Динамика замеров тела: /get_girths \n"
-            "Список записей дневника: /get_entries \n")
+        await message.answer(menu)
 
 
 @dp.message_handler(commands=['add_girths'], state="*")
@@ -53,12 +50,26 @@ async def start_girths(message: types.Message, state: FSMContext):
         await message.answer("Что-то пошло не так.")
 
 
+@dp.message_handler(commands=['add_entries'], state="*")
+async def start_girths(message: types.Message, state: FSMContext):
+    await state.finish()
+
+    result = db.get_user(message.from_user.id)
+    if bool(result):
+        await state.update_data(user_id=result[0].id)
+        await entries_start(message)
+    else:
+        await message.answer("Что-то пошло не так.")
+
+
 @dp.message_handler(commands=['get_girths'])
 async def start_girths(message: types.Message):
     await show_girths(message)
+    await message.answer(menu)
 
 
 register_profile_handlers(dp)
+register_entries_handlers(dp)
 register_girth_handlers(dp)
 
 # @dp.message_handler(commands=['help'])

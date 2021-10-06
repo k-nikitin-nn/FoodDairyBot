@@ -6,6 +6,7 @@ from aiogram.dispatcher.filters.state import State, StatesGroup
 
 import db
 import general
+from config import menu
 
 
 class ProfileUser(StatesGroup):
@@ -69,10 +70,12 @@ def register_profile_handlers(dp):
             message=message,
             state=state,
             data="email",
-            next_message="Спасибо",
+            next_message="Спасибо. Данные сохранены",
             error="Email введен не корректно.",
             check=general.is_email_incorrect
         )
+
+        await message.answer(menu)
 
         data = await state.get_data()
         db.create_user(data)

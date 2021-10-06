@@ -54,7 +54,7 @@ def create_girth(data: dict):
     weight = data.get("weight")
     user_id = data.get("user_id")
 
-    girth = Girth(date, neck, breast, back, belly, thigh, foot, hand, waist, height, weight, user_id)
+    girth = Girth(date, neck, breast, back, belly, thigh, foot, hand, waist, weight, user_id)
     session_commit(girth)
 
 
