@@ -10,7 +10,7 @@ from aiogram.dispatcher.filters import Text
 from config import TOKEN
 from profile import profile_start, register_profile_handlers
 from girths import girth_start, register_girth_handlers, show_girths
-from entries import entries_start, register_entries_handlers
+# from entries import entries_start, register_entries_handlers
 
 from models.database import DB_NAME
 import db
@@ -69,7 +69,7 @@ async def start_girths(message: types.Message):
 
 
 register_profile_handlers(dp)
-register_entries_handlers(dp)
+# register_entries_handlers(dp)
 register_girth_handlers(dp)
 
 # @dp.message_handler(commands=['help'])

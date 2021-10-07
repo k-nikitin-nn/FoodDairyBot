@@ -9,7 +9,7 @@ from models.database import Base
 
 class MealTime(enum.Enum):
     breakfast = "Завтрак",
-    lunch = "Ланч",
+    lunch = "Обед",
     dinner = "Ужин",
     snacking = "Перекус",
     water = "Вода"
