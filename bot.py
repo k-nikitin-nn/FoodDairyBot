@@ -7,7 +7,6 @@ from aiogram.dispatcher import FSMContext
 from aiogram.contrib.fsm_storage.memory import MemoryStorage
 from aiogram.dispatcher.filters import Text
 
-from config import TOKEN
 from profile import profile_start, register_profile_handlers
 from girths import girth_start, register_girth_handlers, show_girths
 # from entries import entries_start, register_entries_handlers
@@ -18,7 +17,9 @@ from config import menu
 
 logging.basicConfig(level=logging.INFO)
 
-bot = Bot(TOKEN)
+token = os.getenv("TELEGRAM_TOKEN")
+
+bot = Bot(token)
 dp = Dispatcher(bot, storage=MemoryStorage())
 
 
