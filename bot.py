@@ -13,7 +13,7 @@ from girths import girth_start, register_girth_handlers, show_girths
 
 from models.database import DB_NAME
 import db
-from config import menu
+from config import menu, text_welcome
 from dotenv import load_dotenv
 
 logging.basicConfig(level=logging.INFO)
@@ -32,7 +32,7 @@ async def start_handler(message: types.Message, state: FSMContext):
     Если найден - показываем меню"""
     await state.finish()
 
-    await message.answer("Добро пожаловать!")
+    await message.answer(text_welcome)
     result = db.get_user(message.from_user.id)
     if not bool(result):
         await state.update_data(telegram_id=message.from_user.id)
@@ -68,7 +68,6 @@ async def start_girths(message: types.Message, state: FSMContext):
 @dp.message_handler(commands=['get_girths'])
 async def start_girths(message: types.Message):
     await show_girths(message)
-    await message.answer(menu)
 
 
 register_profile_handlers(dp)

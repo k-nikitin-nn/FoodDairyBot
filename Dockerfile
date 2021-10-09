@@ -1,6 +1,7 @@
 FROM python:3.8
 
-ENV TELEGRAM_API_TOKEN=""
+WORKDIR /FooddairyBot
+
 ENV VIRTUAL_ENV=/FooddairyBot/venv
 RUN python3 -m venv $VIRTUAL_ENV
 ENV PATH="$VIRTUAL_ENV/bin:$PATH"

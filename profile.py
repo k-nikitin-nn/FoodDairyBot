@@ -17,8 +17,7 @@ class ProfileUser(StatesGroup):
 
 
 async def profile_start(message: types.Message):
-    await message.answer("Привет! Давай знакомиться!")
-    await message.answer("Как тебя зовут?")
+    await message.answer("Для начала давай познакомимся. Как тебя зовут?")
     await ProfileUser.wait_username.set()
 
 
@@ -30,7 +29,7 @@ def register_profile_handlers(dp):
             state=state,
             states=ProfileUser,
             data="name",
-            next_message="Введи свою фамилию:")
+            next_message="Фамилия:")
 
     @dp.message_handler(state=ProfileUser.wait_lastname)
     async def profile_lastname_filled(message: types.Message, state: FSMContext):
@@ -39,7 +38,7 @@ def register_profile_handlers(dp):
             state=state,
             states=ProfileUser,
             data="last_name",
-            next_message="Введи дату рождения в формате '01.01.0001'")
+            next_message="Дата рождения в формате '01.01.0001':")
 
     @dp.message_handler(state=ProfileUser.wait_birthday)
     async def profile_birthday_filled(message: types.Message, state: FSMContext):
@@ -49,19 +48,21 @@ def register_profile_handlers(dp):
             states=ProfileUser,
             data="birthday",
             extra=general.string_to_date,
-            next_message="Введи email:",
+            next_message="Email:",
             error="Дата рождения введена не корректно.",
             check=general.is_date_incorrect
         )
 
     @dp.message_handler(state=ProfileUser.wait_email)
     async def profile_email_filled(message: types.Message, state: FSMContext):
+        data = await state.get_data()
+        name = data.get("name")
         res = await general.update_data(
             message=message,
             state=state,
             states=ProfileUser,
             data="email",
-            next_message="Спасибо. Данные сохранены",
+            next_message=f"Спасибо за информацию, {name}.",
             error="Email введен не корректно.",
             check=general.is_email_incorrect
         )

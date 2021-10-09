@@ -39,7 +39,7 @@ def girths_structure():
 async def show_girths(message: types.Message):
     result = db.get_girths(message.from_user.id)
     if not result:
-        await message.answer("Измерения еще не введены.")
+        await message.answer("Замеры тела еще не введены.")
         await message.answer(menu)
         return
 
@@ -56,7 +56,7 @@ async def show_girths(message: types.Message):
         unit = value.get("unit")
 
         for date, girth in value.get("dates").items():
-            mes = mes + f"{date} - {girth} {unit}. \n"
+            mes = mes + f"{date} - {girth}.0 {unit}. \n"
 
         await message.answer(mes)
 
