@@ -1,0 +1,7 @@
+.vscode
+.git
+.idea
+venv
+Dockerfile
+fooddairy.sqlite
+__pycache__

@@ -186,7 +186,7 @@ def register_girth_handlers(dp):
 
     @dp.message_handler(state=Girth.wait_weight)
     async def girth_height_filled(message: types.Message, state: FSMContext):
-        await general.update_data(
+        res = await general.update_data(
             message=message,
             state=state,
             states=Girth,
@@ -197,7 +197,8 @@ def register_girth_handlers(dp):
             check=general.is_not_number
         )
 
-        await message.answer(menu)
+        if res is None:
+            await message.answer(menu)
 
-        data = await state.get_data()
-        db.create_girth(data)
+            data = await state.get_data()
+            db.create_girth(data)

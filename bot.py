@@ -14,9 +14,11 @@ from girths import girth_start, register_girth_handlers, show_girths
 from models.database import DB_NAME
 import db
 from config import menu
+from dotenv import load_dotenv
 
 logging.basicConfig(level=logging.INFO)
 
+load_dotenv()
 token = os.getenv("TELEGRAM_TOKEN")
 
 bot = Bot(token)
@@ -58,7 +60,7 @@ async def start_girths(message: types.Message, state: FSMContext):
     result = db.get_user(message.from_user.id)
     if bool(result):
         await state.update_data(user_id=result[0].id)
-        await entries_start(message)
+        # await entries_start(message)
     else:
         await message.answer("Что-то пошло не так.")
 

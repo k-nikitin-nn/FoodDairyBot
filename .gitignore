@@ -139,7 +139,8 @@ cython_debug/
 
 .idea/
 
-config.py
 *.sqlite
 test.py
 *.sqlite-journal
+.env
+.vscode/

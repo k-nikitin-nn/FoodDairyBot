@@ -22,16 +22,6 @@ async def profile_start(message: types.Message):
     await ProfileUser.wait_username.set()
 
 
-profile_config = {
-    "wait_username": {
-        "state": ProfileUser.wait_username
-    },
-    "wait_lastname": {"state": ProfileUser.wait_lastname},
-    "wait_birthday": {"state": ProfileUser.wait_birthday},
-    "wait_email": {"state": ProfileUser.wait_email}
-}
-
-
 def register_profile_handlers(dp):
     @dp.message_handler(state=ProfileUser.wait_username)
     async def profile_username_filled(message: types.Message, state: FSMContext):
@@ -66,16 +56,18 @@ def register_profile_handlers(dp):
 
     @dp.message_handler(state=ProfileUser.wait_email)
     async def profile_email_filled(message: types.Message, state: FSMContext):
-        await general.update_data(
+        res = await general.update_data(
             message=message,
             state=state,
+            states=ProfileUser,
             data="email",
             next_message="Спасибо. Данные сохранены",
             error="Email введен не корректно.",
             check=general.is_email_incorrect
         )
 
-        await message.answer(menu)
+        if res is None:
+            await message.answer(menu)
 
-        data = await state.get_data()
-        db.create_user(data)
+            data = await state.get_data()
+            db.create_user(data)

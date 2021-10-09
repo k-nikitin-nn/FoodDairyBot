@@ -33,7 +33,7 @@ def validation_function(fn):
 
         if check is not None and check(message.text):
             await message.answer(error)
-            return
+            return False
 
         await fn(**kwargs)
 
